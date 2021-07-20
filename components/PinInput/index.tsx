@@ -1,9 +1,19 @@
-import React from "react";
+import React, {useState} from "react";
 import style from "../../styles/PinInput.module.css"
 import PinInput from "react-pin-input";
-
+import Button from "../Button";
+import { PAGES } from "../../services/constants";
+import { confirmSubscriptionAIRTELTIGO } from "../../services/restService";
+import { useToasts } from "react-toast-notifications";
 
 const PinInputComponent = (props: any) => {
+
+    const {service, pid, keyword, attemptId,adId, header} = props
+
+    const [pin, setPin] = useState("")
+    const [loading, setLoading] =useState(false)
+    
+    const {addToast} = useToasts()
 
     return(
         <div className={style.pin_container}>
@@ -25,11 +35,39 @@ const PinInputComponent = (props: any) => {
                                                 }}
                                                 type="numeric"
                                                 onChange={(pin) => {
-
+                                                    setPin(pin)
                                                 }}
                                             />
 
-            <button className={style.pin_confirm_btn}>Confirm</button>
+            <div style={{margin:"1rem 0"}}>
+            <Button loading={loading} text="Confirm" onClick={()=> {
+                if(pin !== ""){
+                    setLoading(true)
+                    confirmSubscriptionAIRTELTIGO(pin, header.msisdn, pid, keyword).then(({data})=>{
+                        console.log(data)
+                        if(data.code >= 400){
+                            addToast("Error confirming your pin, check and try again", {
+                                appearance:"error",
+                                autoDismiss: true
+                            })
+                        }
+                    }).catch(e => {
+                        console.log(e)
+                        addToast("Error confirming your pin, check and try again", {
+                            appearance:"error",
+                            autoDismiss: true
+                        })
+                    }).finally(()=> setLoading(false))
+                }else{
+                    addToast("Please enter your confirmation PIN", {
+                        appearance:"info",
+                        autoDismiss:true
+                    })
+                }
+            }}/>
+            </div>
+
+            <span style={{color:"gray", cursor:"pointer"}} onClick={() => {props.navigate(PAGES.MAIN)}}>back</span>
 
             
 

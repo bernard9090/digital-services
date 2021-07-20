@@ -3,22 +3,20 @@ import axios from "axios";
 import { useRouter } from "next/router";
 import getConfig from 'next/config'
 import style from "../styles/Home.module.css"
-import { fetchSingleServiceDetails, headerEnrichment, widgetSubscriptionLookup, fetchWidgetData } from "../services/restService";
+import { fetchSingleServiceDetails, headerEnrichment, widgetSubscriptionLookup, fetchWidgetData,sendSubscriptionAttempt } from "../services/restService";
 import MainPage from "../components/MainPage";
 import PinInput from "../components/PinInput";
 import AwaitingVerification from "../components/AwaitingVerification";
+import { PAGES } from "../services/constants";
+import { v4 as uuidv4 } from 'uuid';
 
-const PAGES = {
-    MAIN:"main",
-    PIN_INPUT:"pin",
-    VERIFICATION:"verification"
-}
 
 const Page = (props:any) => {
     const router = useRouter();
     const [serviceDetails, setServiceDetails] = useState({})
     const [page, setPage] = useState(PAGES.MAIN)
     const [widgetDetails, setWidgetDetails] = useState<any>({})
+    const [subscriptionAttemptId, setSubscriptionAttemptId] = useState<any>()
    
 
     const {pid, keyword, adId, redirect} = router.query
@@ -53,6 +51,13 @@ const Page = (props:any) => {
                     // do the redirect here
                     redirectToPage(asr)
                 }
+            }else{
+                // first time here, send the sub attempt id
+                const attemptId = uuidv4();
+                sendSubscriptionAttempt(header.msisdn, null, keyword, pid, header.smsc,attemptId).then(() =>{
+                    setSubscriptionAttemptId(attemptId)
+                })
+                
             }
         }).catch((e) => {
             
@@ -81,11 +86,23 @@ const Page = (props:any) => {
                 {
                     page === PAGES.MAIN && <MainPage 
                     header={props.header}
-                    service={serviceDetails} navigate={(page: string) => setPage(page)}/>
+                    service={serviceDetails} 
+                    pid={pid}
+                    keyword={keyword}
+                    adId={adId}
+                    attemptId={subscriptionAttemptId}
+                    navigate={(page: string) => setPage(page)}/>
                 }
 
                 {
-                    page === PAGES.PIN_INPUT &&  <PinInput navigate={(page: string) => setPage(page)}/>
+                    page === PAGES.PIN_INPUT &&  <PinInput 
+                    navigate={(page: string) => setPage(page)}
+                    header={props.header}
+                    service={serviceDetails} 
+                    pid={pid}
+                    keyword={keyword}
+                    adId={adId}
+                    attemptId={subscriptionAttemptId}/>
                 }
                 {
                     page === PAGES.VERIFICATION &&  <AwaitingVerification navigate={(page: string) => setPage(page)}/>
@@ -97,6 +114,7 @@ const Page = (props:any) => {
 
 export const getStaticProps = async  (context:  any) => {
 
+    
 
     const { serverRuntimeConfig } = getConfig()
    

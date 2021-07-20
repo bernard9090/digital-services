@@ -1,14 +1,22 @@
 import React, {useState, useEffect} from "react";
 import style from "../../styles/MainPage.module.css"
+import Button from "../../components/Button"
+import { PAGES } from "../../services/constants";
+import { subscribeToService } from "../../services/restService";
+import { useToasts } from "react-toast-notifications";
+
 
 const MainPage = (props: any) => {
 
-    const {service} = props
+    const {service, pid, keyword, attemptId,adId} = props
     const [msisdn, setMsisdn] = useState(props.header.msisdn)
     const [smsc, setSmsc] = useState(props.header.smsc)
     const [smscAllowed, setSmscAllow] = useState(true)
+    const [loading, setLoading] = useState(false)
 
     const [allowedServices, setAllowedNetworks] = useState<any>([])
+
+    const {addToast} = useToasts()
 
     useEffect(()=> {
         if(service){
@@ -42,8 +50,6 @@ const MainPage = (props: any) => {
             console.log(allowedNetworks,smscAllowed)
             setAllowedNetworks(allowedNetworks)
             setSmscAllow(smscAllowed)
-
-            
         }
 
 
@@ -71,7 +77,26 @@ const MainPage = (props: any) => {
                 }
 
                 <div style={{marginTop:"2rem"}}>
-                <button className={style.sub_button}>Subscribe</button>
+                    <Button loading={loading} text={"Subscribe"} onClick={()=> { 
+
+                        if(msisdn !== "" && smsc !== ""){
+                            setLoading(true)
+                            subscribeToService(keyword, service.name, null,msisdn, pid, attemptId, smsc, adId).then(({data})=> {         
+                            
+                                if(smsc === "AIRTELTIGO"){
+                                    props.navigate(PAGES.PIN_INPUT)
+                                }else if(smsc === "MTNGH"){
+                                    props.navigate(PAGES.VERIFICATION)
+                                }
+                            }).catch(e => {
+                                addToast(`Error subscribing to ${service.name}`, {
+                                    appearance:"error",
+                                    autoDismiss:true
+                                })
+                            }).finally(()=> setLoading(false))
+                        }
+                       
+                    } }/>
                 </div>
             </div>
          </div>
