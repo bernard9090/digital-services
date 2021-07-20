@@ -1,0 +1,54 @@
+.page_header{
+    text-align: center;
+    display: flex;
+    margin: 1rem;
+    justify-content: center;
+}
+
+.container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+}
+
+.phone_container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.phone_label{
+    margin-top: 1rem;
+    color: grey;
+}
+
+.phone_input{
+    height: 44px;
+    width: 240px;
+    outline: red;
+    border-radius: 4px;
+    border: 1px solid gray;
+    text-align: center;
+}
+
+.phone_input:focus{
+    border: 1px solid black;
+}
+
+.netowrk_select{
+    height: 44px;
+    width: 240px;
+    margin-top: 1rem;
+    outline: none;
+    border-radius: 4px;
+}
+
+.sub_button{
+    height: 44px;
+    width: 240px;
+    background-color: black;
+    color: white;
+    border: none;
+}
+
