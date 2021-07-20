@@ -9,7 +9,7 @@ const AwaitingVerification = (props:any) => {
             alignItems:"center",
             justifyContent:"center"
         }}>
-            <p style={{textAlign:"center" }}>Your subscription is being processed. If you didn't receive any USSD prompt, Please dial *175# and send 2 to confirm.</p>
+            <p style={{textAlign:"center" }}>Your subscription is being processed. If you didn&apos;t receive any USSD prompt, Please dial *175# and send 2 to confirm.</p>
 
 
         </div>

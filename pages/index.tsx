@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, useCallback} from "react";
 import axios from "axios";
 import { useRouter } from "next/router";
 import getConfig from 'next/config'
@@ -24,6 +24,8 @@ const Page = (props:any) => {
     const {pid, keyword, adId, redirect} = router.query
     const {header} = props
 
+
+  
     
 
     useEffect(()=> {
@@ -57,11 +59,11 @@ const Page = (props:any) => {
         })
 
 
-    }, [pid, keyword])
+    }, [pid, keyword, header.msisdn]) //react-hooks/exhaustive-deps
 
 
-    const redirectToPage = (asr: string| any) => {
-        const urlParams = `asr=${encodeURIComponent(header.msisdn)}&adId=${adId}&keyword=${keyword}&smsc=${header.smsc}`;
+    const redirectToPage = useCallback((asr: string| any)  => {
+        const urlParams = `asr=${encodeURIComponent(asr)}&adId=${adId}&keyword=${keyword}&smsc=${header.smsc}`;
         
         const {frontendSyncUrl} = widgetDetails
         let path;
@@ -70,12 +72,8 @@ const Page = (props:any) => {
         }else{
             path = `${frontendSyncUrl}?${urlParams}`;
         }
+    }, [] )
 
-        console.log("redurect to", path)
-    }
-
-
-    
 
     return (
         <div className={style.container}>

@@ -5,7 +5,7 @@ import getConfig from 'next/config'
 
 const url = process.env.HOST
 
-export default  (req: NextApiRequest,
+const fetchWidgetData = (req: NextApiRequest,
     res: NextApiResponse<any>) => {
     const { serverRuntimeConfig, publicRuntimeConfig } = getConfig()
 
@@ -15,3 +15,5 @@ export default  (req: NextApiRequest,
     res.status(200).json({ name: 'John Doe' })
 
 }
+
+export default fetchWidgetData

@@ -47,7 +47,7 @@ const MainPage = (props: any) => {
         }
 
 
-    }, [service])
+    }, [service, smsc])
 
     
  
