@@ -11,16 +11,20 @@ import { PAGES } from "../services/constants";
 import { v4 as uuidv4 } from 'uuid';
 
 
+export const AppContext = React.createContext({})
+
+
 const Page = (props:any) => {
     const router = useRouter();
     const [serviceDetails, setServiceDetails] = useState({})
     const [page, setPage] = useState(PAGES.MAIN)
     const [widgetDetails, setWidgetDetails] = useState<any>({})
     const [subscriptionAttemptId, setSubscriptionAttemptId] = useState<any>()
+    const [header, setHeader] = useState(props.header)
    
 
     const {pid, keyword, adId, redirect} = router.query
-    const {header} = props
+ 
 
 
   
@@ -64,7 +68,7 @@ const Page = (props:any) => {
         })
 
 
-    }, [pid, keyword, header.msisdn]) //react-hooks/exhaustive-deps
+    }, [pid, keyword]) //react-hooks/exhaustive-deps
 
 
     const redirectToPage = useCallback((asr: string| any)  => {
@@ -81,34 +85,52 @@ const Page = (props:any) => {
 
 
     return (
+
+        <AppContext.Provider value={[header, setHeader]}>
         <div className={style.container}>
             <div className={style.card_container}>
                 {
                     page === PAGES.MAIN && <MainPage 
-                    header={props.header}
+                    header={header}
                     service={serviceDetails} 
                     pid={pid}
                     keyword={keyword}
                     adId={adId}
+                    redirect={(asr: any) => redirectToPage(asr)}
                     attemptId={subscriptionAttemptId}
+                    updateHeader={(header: any) => {
+                        console.log(header)
+                        setHeader(header)
+                    }}
                     navigate={(page: string) => setPage(page)}/>
                 }
 
                 {
                     page === PAGES.PIN_INPUT &&  <PinInput 
                     navigate={(page: string) => setPage(page)}
-                    header={props.header}
+                    header={header}
                     service={serviceDetails} 
                     pid={pid}
                     keyword={keyword}
                     adId={adId}
+                    redirect={(asr: any) => redirectToPage(asr)}
                     attemptId={subscriptionAttemptId}/>
                 }
                 {
-                    page === PAGES.VERIFICATION &&  <AwaitingVerification navigate={(page: string) => setPage(page)}/>
+                    page === PAGES.VERIFICATION &&  <AwaitingVerification 
+                    header={header}
+                    service={serviceDetails} 
+                    pid={pid}
+                    keyword={keyword}
+                    adId={adId}
+                    redirect={(asr: any) => redirectToPage(asr)}
+                    attemptId={subscriptionAttemptId}
+                    navigate={(page: string) => setPage(page)}/>
                 }
             </div>
         </div>
+
+        </AppContext.Provider>
     )
 }
 
