@@ -105,3 +105,15 @@ export const confirmSubscriptionAIRTELTIGO = (otp: any, msisdn: any, providerAcc
         }
     })
 };
+
+
+export const writeSubscription = (data: any) => {
+    return axios({
+        method : "POST",
+        url:`${BASE_URL}/api/v1/subscriber/thirdparty/subscription`,
+        headers:{
+
+        },
+        data
+    })
+}
