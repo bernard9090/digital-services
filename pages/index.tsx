@@ -20,7 +20,10 @@ const Page = (props:any) => {
     const [page, setPage] = useState(PAGES.MAIN)
     const [widgetDetails, setWidgetDetails] = useState<any>({})
     const [subscriptionAttemptId, setSubscriptionAttemptId] = useState<any>()
-    const [header, setHeader] = useState(props.header)
+    const [header, setHeader] = useState({})
+
+    console.log("token", props.token)
+ 
    
 
     const {pid, keyword, adId, redirect} = router.query
@@ -31,6 +34,8 @@ const Page = (props:any) => {
     
 
     useEffect(()=> {
+
+        
 
         // fetch widget data for frontend sync
         fetchWidgetData(pid).then(({data})=> {
@@ -45,27 +50,35 @@ const Page = (props:any) => {
         }).catch(e => {
 
         })
-       
-        widgetSubscriptionLookup(keyword, header.msisdn).then(({data}) => {
-            console.log("widget lookup", data)
-            const {result} = data
-            if(result){
-                const {subscribed, asr} = result
-                if(subscribed){
-                    // do the redirect here
-                    redirectToPage(asr)
+
+
+        headerEnrichment().then(({data})=> {
+            setHeader(data)
+            const {smsc, msisdn} = data
+
+            widgetSubscriptionLookup(keyword, msisdn).then(({data}) => {
+                console.log("widget lookup", data)
+                const {result} = data
+                if(result){
+                    const {subscribed, asr} = result
+                    if(subscribed){
+                        // do the redirect here
+                        redirectToPage(asr)
+                    }
+                }else{
+                    // first time here, send the sub attempt id
+                    const attemptId = uuidv4();
+                    sendSubscriptionAttempt(msisdn, null, keyword, pid, smsc, attemptId).then(() =>{
+                        setSubscriptionAttemptId(attemptId)
+                    })
+                    
                 }
-            }else{
-                // first time here, send the sub attempt id
-                const attemptId = uuidv4();
-                sendSubscriptionAttempt(header.msisdn, null, keyword, pid, header.smsc,attemptId).then(() =>{
-                    setSubscriptionAttemptId(attemptId)
-                })
+            }).catch((e) => {
                 
-            }
-        }).catch((e) => {
-            
+            })
         })
+       
+        
 
 
     }, [pid, keyword]) //react-hooks/exhaustive-deps
@@ -146,13 +159,14 @@ export const getStaticProps = async  (context:  any) => {
         password: login_password
     })
 
+    console.log(data)
+
     serverRuntimeConfig.secret = data.accessToken
 
-    const response = await  headerEnrichment()
 
     return {
         props : {
-            header:response.data
+            token:data
         }
     }
 }
