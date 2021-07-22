@@ -50,7 +50,8 @@ export const headerEnrichment = () => {
         url: HEADER,
         headers: {
             'Access-Control-Allow-Origin': '*',
-            "msisdn": "233243729040",
+            "msisdn": "0554839232",
+            "imsi":"somtheing here"
             
         }
     });

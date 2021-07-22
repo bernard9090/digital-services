@@ -53,6 +53,7 @@ const Page = (props:any) => {
 
 
         headerEnrichment().then(({data})=> {
+            console.log("header en", data)
             setHeader(data)
             const {smsc, msisdn} = data
 

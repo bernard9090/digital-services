@@ -18,6 +18,13 @@ const MainPage = (props: any) => {
 
     const [allowedServices, setAllowedNetworks] = useState<any>([])
 
+    useEffect(()=> {
+        if(props.header){
+            setMsisdn(props.header.msisdn)
+            setSmsc(props.header.smsc)
+        }
+    }, [props.header])
+
     const {addToast} = useToasts()
 
     useEffect(()=> {
