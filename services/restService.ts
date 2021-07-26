@@ -1,7 +1,7 @@
 import axios from "axios";
 
 
-const BASE_URL = "https://sdp4.rancardmobility.com";
+const BASE_URL = "https://sdp5.rancardmobility.com";
 const HEADER = "http://header.rancardmobility.com/decrypt"
 axios.create({
     headers:{
