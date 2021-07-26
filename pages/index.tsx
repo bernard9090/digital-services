@@ -20,7 +20,7 @@ const Page = (props:any) => {
     const [page, setPage] = useState(PAGES.MAIN)
     const [widgetDetails, setWidgetDetails] = useState<any>({})
     const [subscriptionAttemptId, setSubscriptionAttemptId] = useState<any>()
-    const [header, setHeader] = useState({})
+    const [header, setHeader] = useState<any>({})
 
     console.log("token", props.token)
  
