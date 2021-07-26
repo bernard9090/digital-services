@@ -9,6 +9,7 @@ import PinInput from "../components/PinInput";
 import AwaitingVerification from "../components/AwaitingVerification";
 import { PAGES } from "../services/constants";
 import { v4 as uuidv4 } from 'uuid';
+import Head from "next/head"
 
 
 export const AppContext = React.createContext({})
@@ -16,10 +17,10 @@ export const AppContext = React.createContext({})
 
 const Page = (props:any) => {
     const router = useRouter();
-    const [serviceDetails, setServiceDetails] = useState({})
+    const [serviceDetails, setServiceDetails] = useState<any>({})
     const [page, setPage] = useState(PAGES.MAIN)
     const [widgetDetails, setWidgetDetails] = useState<any>({})
-    const [subscriptionAttemptId, setSubscriptionAttemptId] = useState<any>()
+    const [subscriptionAttemptId, setSubscriptionAttemptId] = useState<any>("")
     const [header, setHeader] = useState<any>({})
 
     console.log("token", props.token)
@@ -101,6 +102,9 @@ const Page = (props:any) => {
     return (
 
         <AppContext.Provider value={[header, setHeader]}>
+            <Head>
+                <title>{serviceDetails.name}</title>
+            </Head>
         <div className={style.container}>
             <div className={style.card_container}>
                 {
@@ -148,7 +152,7 @@ const Page = (props:any) => {
     )
 }
 
-export const getStaticProps = async  (context:  any) => {
+export const getServerSideProps = async  (context:  any) => {
 
     
 
