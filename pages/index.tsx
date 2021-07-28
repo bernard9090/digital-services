@@ -95,7 +95,7 @@ const Page = (props:any) => {
         }else{
             path = `${frontendSyncUrl}?${urlParams}`;
         }
-        window.location = path
+        window.location.replace(path)
     }, [] )
 
 
