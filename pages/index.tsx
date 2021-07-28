@@ -23,9 +23,6 @@ const Page = (props:any) => {
     const [widgetDetails, setWidgetDetails] = useState<any>({})
     const [subscriptionAttemptId, setSubscriptionAttemptId] = useState<any>("")
     const [header, setHeader] = useState<any>({})
-
-    console.log("token", props.token)
- 
    
 
     const {pid, keyword, adId, redirect} = router.query
@@ -109,9 +106,9 @@ const Page = (props:any) => {
         <div className={style.container} >
 
         <Image 
-        src={widgetDetails.backgroundImage ? widgetDetails.backgroundImage : "https://sdp5.rancardmobility.com/static/media/rancard_promise_footer.c85ee24b.png"}
+        src={widgetDetails.backgroundImage ? widgetDetails.backgroundImage : "/assets/wdbg.png"}
         layout="fill"
-        objectFit="contain"
+        objectFit="cover"
         quality={100}/>
             <div className={style.card_container}>
                 {
