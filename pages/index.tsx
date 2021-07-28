@@ -121,7 +121,6 @@ const Page = (props:any) => {
                     redirect={(asr: any) => redirectToPage(asr)}
                     attemptId={subscriptionAttemptId}
                     updateHeader={(header: any) => {
-                        console.log(header)
                         setHeader(header)
                     }}
                     navigate={(page: string) => setPage(page)}/>

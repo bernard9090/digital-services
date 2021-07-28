@@ -15,6 +15,7 @@ const MainPage = (props: any) => {
     const [smscAllowed, setSmscAllow] = useState(true)
     const [loading, setLoading] = useState(false)
     const [smscChanged, setSsmscChanged] = useState(false)
+    const [msisdnChanged, setMsisdnChanged] = useState(false)
 
     const [allowedServices, setAllowedNetworks] = useState<any>([])
 
@@ -81,6 +82,9 @@ const MainPage = (props: any) => {
                         ...props.header,
                         msisdn: e.target.value
                     })
+                    if(!msisdnChanged){
+                        setMsisdnChanged(true)
+                    }
                 }} className={style.phone_input} type="text" autoFocus placeholder="Phone number"/>
 
                 {
@@ -89,7 +93,6 @@ const MainPage = (props: any) => {
                             ...props.header,
                             smsc: e.target.value
                         })
-                        console.log(e.target.value)
                         setSmsc(e.target.value)
                         setSsmscChanged(true)
                     }} name="network" id="network">
@@ -107,8 +110,11 @@ const MainPage = (props: any) => {
 
                         if(msisdn !== "" && smsc !== ""){
                             setLoading(true)
-                            
-                            subscribeToService(keyword, service.name, null,msisdn, pid, attemptId, smsc, adId).then(({data})=> {         
+                            let subAttemptId = attemptId
+                            if(msisdnChanged && smsc === "OT"){
+                                subAttemptId = null
+                            }
+                            subscribeToService(keyword, service.name, null, msisdn, pid, subAttemptId, smsc, adId).then(({data})=> {         
                             
                                 if(smsc === "AIRTELTIGO"){
                                     props.navigate(PAGES.PIN_INPUT)
