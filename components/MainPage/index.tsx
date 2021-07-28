@@ -107,6 +107,7 @@ const MainPage = (props: any) => {
 
                         if(msisdn !== "" && smsc !== ""){
                             setLoading(true)
+                            
                             subscribeToService(keyword, service.name, null,msisdn, pid, attemptId, smsc, adId).then(({data})=> {         
                             
                                 if(smsc === "AIRTELTIGO"){

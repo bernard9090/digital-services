@@ -10,6 +10,7 @@ import AwaitingVerification from "../components/AwaitingVerification";
 import { PAGES } from "../services/constants";
 import { v4 as uuidv4 } from 'uuid';
 import Head from "next/head"
+import Image from "next/image"
 
 
 export const AppContext = React.createContext({})
@@ -35,8 +36,6 @@ const Page = (props:any) => {
     
 
     useEffect(()=> {
-
-        
 
         // fetch widget data for frontend sync
         fetchWidgetData(pid).then(({data})=> {
@@ -96,16 +95,24 @@ const Page = (props:any) => {
         }else{
             path = `${frontendSyncUrl}?${urlParams}`;
         }
+        window.location = path
     }, [] )
 
 
     return (
 
+       
         <AppContext.Provider value={[header, setHeader]}>
             <Head>
                 <title>{serviceDetails.name}</title>
             </Head>
-        <div className={style.container}>
+        <div className={style.container} >
+
+        <Image 
+        src={widgetDetails.backgroundImage ? widgetDetails.backgroundImage : "https://sdp5.rancardmobility.com/static/media/rancard_promise_footer.c85ee24b.png"}
+        layout="fill"
+        objectFit="contain"
+        quality={100}/>
             <div className={style.card_container}>
                 {
                     page === PAGES.MAIN && <MainPage 
@@ -149,6 +156,7 @@ const Page = (props:any) => {
         </div>
 
         </AppContext.Provider>
+        
     )
 }
 
