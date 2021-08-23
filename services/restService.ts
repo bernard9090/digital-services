@@ -1,8 +1,10 @@
 import axios from "axios";
 
 
-const BASE_URL = "https://sdp5.rancardmobility.com";
-const HEADER = "http://header.rancardmobility.com/decrypt"
+const BASE_URL = "https://sdp6.rancardmobility.com";
+const HEADER = "http://header2.rancardmobility.com/decrypt"
+const HEADER_DEV = "http://localhost:5000/decrypt"
+
 axios.create({
     headers:{
         "Access-Control-Allow-Origin":"*"
@@ -32,26 +34,30 @@ export const fetchSingleServiceDetails = (providerId:any, keyword:any) => {
     })
 };
 
-export const widgetSubscriptionLookup = (service:string|any, msisdn:string) => {
+export const widgetSubscriptionLookup = (service:string|any, subscriptionRequestId:string, msisdn : string| any) => {
     return axios({
         method:"GET",
         url:`${BASE_URL}/api/v1/subscriber/widget/subscription/lookup`,
         params:{
             service,
+            subscriptionRequestId,
             msisdn
         }
     })
 };
 
-export const headerEnrichment = () => {
-    console.log("header called");
+export const headerEnrichment = (token: String, providerId: string|any, keyword: String | any) => {
     return axios({
         method: 'GET',
         url: HEADER,
         headers: {
             'Access-Control-Allow-Origin': '*',
-            // "msisdn": "0554839232",
-            
+            //  "msisdn": "0554839232",
+             "Authorization": token 
+        },
+        params:{
+            provider: providerId,
+            keyword: keyword
         }
     });
 };
@@ -73,7 +79,7 @@ export const sendSubscriptionAttempt = (msisdn: string,shortcode:string|null, se
 }
 
 
-export const subscribeToService = (keyword:any, service:any,  shortcode:any, msisdn:any, providerAccountId:any,subscriptionAttemptId:any, smsc:any, adId:any) => {
+export const subscribeToService = (keyword:any, service:any,  shortcode:any, msisdn:any, providerAccountId:any,subscriptionAttemptId:any, smsc:any, adId:any, subscriptionRequestId: string | any) => {
     console.log(service, msisdn, providerAccountId, shortcode, keyword);
     let service_ = keyword ? keyword : service;
     return axios({
@@ -86,7 +92,8 @@ export const subscribeToService = (keyword:any, service:any,  shortcode:any, msi
             providerAccountId,
             smsc,
             advertisingId:adId,
-            subscriptionAttemptId
+            subscriptionAttemptId,
+            subscriptionRequestId
         }
     })
 };

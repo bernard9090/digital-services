@@ -11,7 +11,7 @@ import { PAGES } from "../services/constants";
 import { v4 as uuidv4 } from 'uuid';
 import Head from "next/head"
 import Image from "next/image"
-
+import styles from "../styles/Home.module.css"
 
 export const AppContext = React.createContext({})
 
@@ -26,6 +26,7 @@ const Page = (props:any) => {
    
 
     const {pid, keyword, adId, redirect} = router.query
+
  
 
 
@@ -33,6 +34,7 @@ const Page = (props:any) => {
     
 
     useEffect(()=> {
+        console.log(props)
 
         // fetch widget data for frontend sync
         fetchWidgetData(pid).then(({data})=> {
@@ -49,12 +51,12 @@ const Page = (props:any) => {
         })
 
 
-        headerEnrichment().then(({data})=> {
+        headerEnrichment(props.token, pid, keyword).then(({data})=> {
             console.log("header en", data)
             setHeader(data)
-            const {smsc, msisdn} = data
+            const {smsc, msisdn, sub_request_id} = data
 
-            widgetSubscriptionLookup(keyword, msisdn).then(({data}) => {
+            widgetSubscriptionLookup(keyword,msisdn,  sub_request_id).then(({data}) => {
                 console.log("widget lookup", data)
                 const {result} = data
                 if(result){
@@ -106,9 +108,11 @@ const Page = (props:any) => {
         <div className={style.container} >
 
         <Image 
+        className={styles.bacground_image}
+        objectPosition="center"
         src={widgetDetails.backgroundImage ? widgetDetails.backgroundImage : "/assets/wdbg.png"}
         layout="fill"
-        objectFit="cover"
+        objectFit="contain"
         quality={100}/>
             <div className={style.card_container}>
                 {
@@ -163,21 +167,24 @@ export const getServerSideProps = async  (context:  any) => {
     const { serverRuntimeConfig } = getConfig()
    
     const {login_email, login_password} = serverRuntimeConfig
-    const {data}  = await axios.post("http://unify_test.rancardmobility.com/api/v2/auth/signin", {
+    const data  = await axios.post("https://sdp6.rancardmobility.com/api/v1/user/login", {
         email: login_email,
         password: login_password
     })
 
-    console.log(data)
+    console.log("login",data.headers.authorization)
 
-    serverRuntimeConfig.secret = data.accessToken
+   // serverRuntimeConfig.secret = data.accessToken
 
 
     return {
         props : {
-            token:data
+            token:data.headers.authorization
         }
     }
 }
 
+
 export default Page
+
+

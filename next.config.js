@@ -2,8 +2,8 @@ module.exports = {
   reactStrictMode: true,
   serverRuntimeConfig:{
     secret:"HELLO",
-    login_email:"a@g.com",
-    login_password: "!Qazxsw2"
+    login_email:"support@rancard.com",
+    login_password: "Sprt@ranc"
   },
   images:{
     domains:[ "sdp5.rancardmobility.com"]

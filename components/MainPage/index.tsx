@@ -16,6 +16,7 @@ const MainPage = (props: any) => {
     const [loading, setLoading] = useState(false)
     const [smscChanged, setSsmscChanged] = useState(false)
     const [msisdnChanged, setMsisdnChanged] = useState(false)
+    const [subRequestId, setSubRequestId] = useState<String>("")
 
     const [allowedServices, setAllowedNetworks] = useState<any>([])
 
@@ -23,6 +24,7 @@ const MainPage = (props: any) => {
         if(props.header){
             setMsisdn(props.header.msisdn)
             setSmsc(props.header.smsc)
+            setSubRequestId(props.header.sub_request_id)
         }
     }, [props.header])
 
@@ -114,7 +116,7 @@ const MainPage = (props: any) => {
                             if(msisdnChanged && smsc === "OT"){
                                 subAttemptId = null
                             }
-                            subscribeToService(keyword, service.name, null, msisdn, pid, subAttemptId, smsc, adId).then(({data})=> {         
+                            subscribeToService(keyword, service.name, null, msisdn, pid, subAttemptId, smsc, adId, subRequestId).then(({data})=> {         
                             
                                 if(smsc === "AIRTELTIGO"){
                                     props.navigate(PAGES.PIN_INPUT)

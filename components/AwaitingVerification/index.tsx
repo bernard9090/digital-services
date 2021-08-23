@@ -13,7 +13,7 @@ const AwaitingVerification = (props:any) => {
 
     useEffect(()=> {
         let sublookupDebounce = setInterval(function() {
-            widgetSubscriptionLookup(keyword, header.msisdn).then(({data})=>{
+            widgetSubscriptionLookup(keyword, header.sub_request_id, header.msisdn).then(({data})=>{
                 console.log("regular check data ", data);
                 if(data.result){
                     clearInterval(sublookupDebounce);
