@@ -68,7 +68,7 @@ const Page = (props:any) => {
                 }else{
                     // first time here, send the sub attempt id
                     const attemptId = uuidv4();
-                    sendSubscriptionAttempt(msisdn, null, keyword, pid, smsc, attemptId).then(() =>{
+                    sendSubscriptionAttempt(msisdn, null, keyword, pid, smsc, attemptId, sub_request_id).then(() =>{
                         setSubscriptionAttemptId(attemptId)
                     })
                     

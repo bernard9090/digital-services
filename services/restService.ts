@@ -49,7 +49,7 @@ export const widgetSubscriptionLookup = (service:string|any, subscriptionRequest
 export const headerEnrichment = (token: String, providerId: string|any, keyword: String | any) => {
     return axios({
         method: 'GET',
-        url: HEADER_DEV,
+        url: HEADER,
         headers: {
             'Access-Control-Allow-Origin': '*',
              "msisdn": "0554839232",
@@ -62,7 +62,7 @@ export const headerEnrichment = (token: String, providerId: string|any, keyword:
     });
 };
 
-export const sendSubscriptionAttempt = (msisdn: string,shortcode:string|null, service:string|any, providerAccountId:string|any, smsc:string, subscriptionAttemptId: string) => {
+export const sendSubscriptionAttempt = (msisdn: string,shortcode:string|null, service:string|any, providerAccountId:string|any, smsc:string, subscriptionAttemptId: string, subscriptionRequestId:string | any) => {
     return axios({
         method:"GET",
         url:`${BASE_URL}/api/v1/subscriber/widget/subscription/attempt`,
@@ -72,7 +72,8 @@ export const sendSubscriptionAttempt = (msisdn: string,shortcode:string|null, se
             service,
             providerAccountId,
             smsc,
-            subscriptionAttemptId
+            subscriptionAttemptId,
+            subscriptionRequestId
 
         }
     })
