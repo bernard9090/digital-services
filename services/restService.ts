@@ -52,7 +52,7 @@ export const headerEnrichment = (token: String, providerId: string|any, keyword:
         url: HEADER,
         headers: {
             'Access-Control-Allow-Origin': '*',
-             "msisdn": "0554839232",
+            //  "msisdn": "0554839232",
              "Authorization": token 
         },
         params:{
