@@ -49,10 +49,10 @@ export const widgetSubscriptionLookup = (service:string|any, subscriptionRequest
 export const headerEnrichment = (token: String, providerId: string|any, keyword: String | any) => {
     return axios({
         method: 'GET',
-        url: HEADER,
+        url: HEADER_DEV,
         headers: {
             'Access-Control-Allow-Origin': '*',
-            //  "msisdn": "0554839232",
+             "msisdn": "0554839232",
              "Authorization": token 
         },
         params:{

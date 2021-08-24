@@ -56,7 +56,7 @@ const Page = (props:any) => {
             setHeader(data)
             const {smsc, msisdn, sub_request_id} = data
 
-            widgetSubscriptionLookup(keyword,msisdn,  sub_request_id).then(({data}) => {
+            widgetSubscriptionLookup(keyword, sub_request_id,  msisdn).then(({data}) => {
                 console.log("widget lookup", data)
                 const {result} = data
                 if(result){
