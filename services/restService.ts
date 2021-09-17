@@ -52,7 +52,7 @@ export const headerEnrichment = (token: String, providerId: string|any, keyword:
         url: HEADER,
         headers: {
             'Access-Control-Allow-Origin': '*',
-            //  "msisdn": "0554839232",
+             //"rancardmsisdn": "87bcb336c0662ef8931cc193",
              "Authorization": token 
         },
         params:{
@@ -83,6 +83,7 @@ export const sendSubscriptionAttempt = (msisdn: string,shortcode:string|null, se
 export const subscribeToService = (keyword:any, service:any,  shortcode:any, msisdn:any, providerAccountId:any,subscriptionAttemptId:any, smsc:any, adId:any, subscriptionRequestId: string | any) => {
     console.log(service, msisdn, providerAccountId, shortcode, keyword);
     let service_ = keyword ? keyword : service;
+    msisdn = smsc === "OT" ? null : msisdn
     return axios({
         method: "GET",
         url : `${BASE_URL}/api/v1/subscriber/widget/subscription`,

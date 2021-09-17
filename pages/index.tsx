@@ -23,6 +23,8 @@ const Page = (props:any) => {
     const [widgetDetails, setWidgetDetails] = useState<any>({})
     const [subscriptionAttemptId, setSubscriptionAttemptId] = useState<any>("")
     const [header, setHeader] = useState<any>({})
+    const [asrMsisdn, setAsr] = useState("")
+    const [isAlreadySubscribed, setIsAlreadySubscribed] = useState<any>(false)
    
 
     const {pid, keyword, adId, redirect} = router.query
@@ -61,9 +63,11 @@ const Page = (props:any) => {
                 const {result} = data
                 if(result){
                     const {subscribed, asr} = result
+                    setAsr(asr)
                     if(subscribed){
                         // do the redirect here
-                        redirectToPage(asr)
+                        setAsr(asr)
+                        setIsAlreadySubscribed(true)
                     }
                 }else{
                     // first time here, send the sub attempt id
@@ -84,8 +88,8 @@ const Page = (props:any) => {
     }, [pid, keyword]) //react-hooks/exhaustive-deps
 
 
-    const redirectToPage = useCallback((asr: string| any)  => {
-        const urlParams = `asr=${encodeURIComponent(asr)}&adId=${adId}&keyword=${keyword}&smsc=${header.smsc}`;
+    const redirectToPage = useCallback(()  => {
+        const urlParams = `asr=${encodeURIComponent(asrMsisdn)}&adId=${adId}&keyword=${keyword}&smsc=${header.smsc}`;
         
         const {frontendSyncUrl} = widgetDetails
         let path;
@@ -94,8 +98,9 @@ const Page = (props:any) => {
         }else{
             path = `${frontendSyncUrl}?${urlParams}`;
         }
-        window.location.replace(path)
-    }, [] )
+        console.log(path)
+        //window.location.href = path
+    }, [asrMsisdn] )
 
 
     return (
@@ -112,7 +117,7 @@ const Page = (props:any) => {
         objectPosition="center"
         src={widgetDetails.backgroundImage ? widgetDetails.backgroundImage : "/assets/wdbg.png"}
         layout="fill"
-        objectFit="contain"
+        objectFit="cover"
         quality={100}/>
             <div className={style.card_container}>
                 {
@@ -122,11 +127,15 @@ const Page = (props:any) => {
                     pid={pid}
                     keyword={keyword}
                     adId={adId}
-                    redirect={(asr: any) => redirectToPage(asr)}
+                    redirect={(asr: any) => redirectToPage()}
                     attemptId={subscriptionAttemptId}
+                    asr={asrMsisdn}
+                    isSubscribed={isAlreadySubscribed}
+                    setAsrValue={(asr:any) => setAsr(asr)}
                     updateHeader={(header: any) => {
                         setHeader(header)
                     }}
+                    
                     navigate={(page: string) => setPage(page)}/>
                 }
 
@@ -138,7 +147,9 @@ const Page = (props:any) => {
                     pid={pid}
                     keyword={keyword}
                     adId={adId}
-                    redirect={(asr: any) => redirectToPage(asr)}
+                    asr={asrMsisdn}
+                    setAsrValue={(asr:any) => setAsr(asr)}
+                    redirect={() => redirectToPage()}
                     attemptId={subscriptionAttemptId}/>
                 }
                 {
@@ -148,7 +159,9 @@ const Page = (props:any) => {
                     pid={pid}
                     keyword={keyword}
                     adId={adId}
-                    redirect={(asr: any) => redirectToPage(asr)}
+                    asr={asrMsisdn}
+                    setAsrValue={(asr:any) => setAsr(asr)}
+                    redirect={() => redirectToPage()}
                     attemptId={subscriptionAttemptId}
                     navigate={(page: string) => setPage(page)}/>
                 }

@@ -108,32 +108,43 @@ const MainPage = (props: any) => {
                 }
 
                 <div style={{marginTop:"2rem"}}>
-                    <Button loading={loading} text={"Subscribe"} onClick={()=> { 
+                    {
+                        props.isSubscribed ? <Button onClick={()=> props.redirect()} text={"Continue"}/> : 
+                        <Button loading={loading} text={"Subscribe"} onClick={()=> { 
 
-                        if(msisdn !== "" && smsc !== ""){
-                            setLoading(true)
-                            let subAttemptId = attemptId
-                            if(msisdnChanged && smsc === "OT"){
-                                subAttemptId = null
-                            }
-                            subscribeToService(keyword, service.name, null, msisdn, pid, subAttemptId, smsc, adId, subRequestId).then(({data})=> {         
-                            
-                                if(smsc === "AIRTELTIGO"){
-                                    props.navigate(PAGES.PIN_INPUT)
-                                }else if(smsc === "MTNGH"){
-                                    props.navigate(PAGES.VERIFICATION)
-                                }else{
-                                    props.redirect(msisdn)
+                            if(msisdn !== "" && smsc !== ""){
+                                setLoading(true)
+                                let subAttemptId = attemptId
+                                if(msisdnChanged && smsc === "OT"){
+                                    subAttemptId = null
                                 }
-                            }).catch(e => {
-                                addToast(`Error subscribing to ${service.name}`, {
-                                    appearance:"error",
-                                    autoDismiss:true
-                                })
-                            }).finally(()=> setLoading(false))
-                        }
-                       
-                    } }/>
+                                subscribeToService(keyword, service.name, null, msisdn, pid, subAttemptId, smsc, adId, subRequestId).then(({data})=> {         
+                                
+                                    const {result} = data
+                                    let asrValue = "";
+                                    if(result){
+                                        const {asr} =  result
+                                        asrValue = asr
+                                        props.setAsrValue(asr)
+                                    }
+                                    if(smsc === "AIRTELTIGO"){
+                                        props.navigate(PAGES.PIN_INPUT)
+                                    }else if(smsc === "MTNGH"){
+                                        props.navigate(PAGES.VERIFICATION)
+                                    }else{
+                                        props.redirect(asrValue)
+                                    }
+                                }).catch(e => {
+                                    addToast(`Error subscribing to ${service.name}`, {
+                                        appearance:"error",
+                                        autoDismiss:true
+                                    })
+                                }).finally(()=> setLoading(false))
+                            }
+                           
+                        } }/>
+                    }
+                    
                 </div>
             </div>
          </div>
