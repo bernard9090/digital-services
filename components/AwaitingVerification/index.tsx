@@ -7,7 +7,7 @@ const MTN_TIMEOUT = 60 * 1000;
 
 const AwaitingVerification = (props:any) => {
 
-    const {keyword, header,redirect, navigate} = props
+    const {keyword, header,redirect, navigate, asr} = props
 
     const {addToast} = useToasts()
 
@@ -17,7 +17,7 @@ const AwaitingVerification = (props:any) => {
                 console.log("regular check data ", data);
                 if(data.result){
                     clearInterval(sublookupDebounce);
-                    redirect(header.msisdn)
+                    redirect(asr)
                 }
             });
         },  10 * 1000);

@@ -9,7 +9,7 @@ import { AppContext } from "../../pages";
 
 const MainPage = (props: any) => {
 
-    const {service, pid, keyword, attemptId,adId, redirect} = props
+    const {service, pid, keyword, attemptId,adId, redirect, asr} = props
     const [msisdn, setMsisdn] = useState(props.header.msisdn)
     const [smsc, setSmsc] = useState(props.header.smsc)
     const [smscAllowed, setSmscAllow] = useState(true)
@@ -76,21 +76,23 @@ const MainPage = (props: any) => {
         <div className={style.container}>
             <h4 className={style.page_header}>Get {service.name} directly to your phone at Ghs {service.tariff} {service.billingCycle}</h4>
             <div className={style.phone_container}>
-                <p className={style.phone_label}>Enter your phone number</p>
-
-                <input disabled={smscAllowed} value={msisdn} onChange={(e) => {
-                    setMsisdn(e.target.value)
-                    props.updateHeader({
-                        ...props.header,
-                        msisdn: e.target.value
-                    })
-                    if(!msisdnChanged){
-                        setMsisdnChanged(true)
-                    }
-                }} className={style.phone_input} type="text" autoFocus placeholder="Phone number"/>
+                {!props.isSubscribed && <p className={style.phone_label}>Enter your phone number</p>}
 
                 {
-                    !smscAllowed  && <select className={style.netowrk_select} onChange={(e) =>{
+                    !props.isSubscribed && <input disabled={smscAllowed} value={msisdn} onChange={(e) => {
+                        setMsisdn(e.target.value)
+                        props.updateHeader({
+                            ...props.header,
+                            msisdn: e.target.value
+                        })
+                        if(!msisdnChanged){
+                            setMsisdnChanged(true)
+                        }
+                    }} className={style.phone_input} type="text" autoFocus placeholder="Phone number"/>
+                }
+
+                {
+                    !smscAllowed && !props.isSubscribed  && <select className={style.netowrk_select} onChange={(e) =>{
                         props.updateHeader({
                             ...props.header,
                             smsc: e.target.value
@@ -109,15 +111,16 @@ const MainPage = (props: any) => {
 
                 <div style={{marginTop:"2rem"}}>
                     {
-                        props.isSubscribed ? <Button onClick={()=> props.redirect()} text={"Continue"}/> : 
+                        props.isSubscribed ? <Button onClick={()=> props.redirect(asr)} text={"Continue"}/> : 
                         <Button loading={loading} text={"Subscribe"} onClick={()=> { 
-
+                         
                             if(msisdn !== "" && smsc !== ""){
                                 setLoading(true)
                                 let subAttemptId = attemptId
                                 if(msisdnChanged && smsc === "OT"){
                                     subAttemptId = null
                                 }
+                             
                                 subscribeToService(keyword, service.name, null, msisdn, pid, subAttemptId, smsc, adId, subRequestId).then(({data})=> {         
                                 
                                     const {result} = data

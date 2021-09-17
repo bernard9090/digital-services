@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useCallback} from "react";
+import React, {useState, useEffect, useRef} from "react";
 import axios from "axios";
 import { useRouter } from "next/router";
 import getConfig from 'next/config'
@@ -30,7 +30,8 @@ const Page = (props:any) => {
     const {pid, keyword, adId, redirect} = router.query
 
  
-
+    let redirectButtonRef = useRef(null);
+    
 
   
     
@@ -63,11 +64,13 @@ const Page = (props:any) => {
                 const {result} = data
                 if(result){
                     const {subscribed, asr} = result
+                    console.log(asr)
                     setAsr(asr)
                     if(subscribed){
                         // do the redirect here
-                        setAsr(asr)
-                        setIsAlreadySubscribed(true)
+                        setAsr(asr);
+                        setIsAlreadySubscribed(true);
+                        redirectToPage(asr)
                     }
                 }else{
                     // first time here, send the sub attempt id
@@ -88,20 +91,9 @@ const Page = (props:any) => {
     }, [pid, keyword]) //react-hooks/exhaustive-deps
 
 
-    const redirectToPage = useCallback(()  => {
-        const urlParams = `asr=${encodeURIComponent(asrMsisdn)}&adId=${adId}&keyword=${keyword}&smsc=${header.smsc}`;
-        
-        const {frontendSyncUrl} = widgetDetails
-        let path;
-        if(redirect){
-            path  =`${redirect}?${urlParams}`;
-        }else{
-            path = `${frontendSyncUrl}?${urlParams}`;
-        }
-        console.log(path)
-        //window.location.href = path
-    }, [asrMsisdn] )
-
+    const redirectToPage = (asr: any)  => {
+        redirectButtonRef.current && redirectButtonRef.current.click()
+    }
 
     return (
 
@@ -127,7 +119,7 @@ const Page = (props:any) => {
                     pid={pid}
                     keyword={keyword}
                     adId={adId}
-                    redirect={(asr: any) => redirectToPage()}
+                    redirect={(asr: any) => redirectToPage(asr)}
                     attemptId={subscriptionAttemptId}
                     asr={asrMsisdn}
                     isSubscribed={isAlreadySubscribed}
@@ -149,7 +141,7 @@ const Page = (props:any) => {
                     adId={adId}
                     asr={asrMsisdn}
                     setAsrValue={(asr:any) => setAsr(asr)}
-                    redirect={() => redirectToPage()}
+                    redirect={(asr:any) => redirectToPage(asr)}
                     attemptId={subscriptionAttemptId}/>
                 }
                 {
@@ -161,12 +153,26 @@ const Page = (props:any) => {
                     adId={adId}
                     asr={asrMsisdn}
                     setAsrValue={(asr:any) => setAsr(asr)}
-                    redirect={() => redirectToPage()}
+                    redirect={(asr:any) => redirectToPage(asr)}
                     attemptId={subscriptionAttemptId}
                     navigate={(page: string) => setPage(page)}/>
                 }
             </div>
         </div>
+
+        <button ref={redirectButtonRef} style={{position:"relative", left:-10000}} onClick={()=> {
+            console.log("callback", asrMsisdn)
+            const urlParams = `asr=${encodeURIComponent(asrMsisdn)}&adId=${adId}&keyword=${keyword}&smsc=${header.smsc}`;
+            
+            const {frontendSyncUrl} = widgetDetails
+            let path;
+            if(redirect){
+                path  =`${redirect}?${urlParams}`;
+            }else{
+                path = `${frontendSyncUrl}?${urlParams}`;
+            }
+            router.push(path)
+        }}></button>
 
         </AppContext.Provider>
         

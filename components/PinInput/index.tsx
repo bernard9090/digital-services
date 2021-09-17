@@ -8,10 +8,11 @@ import { useToasts } from "react-toast-notifications";
 
 const PinInputComponent = (props: any) => {
 
-    const {service, pid, keyword, attemptId,adId, header, redirect} = props
+    const {service, pid, keyword, attemptId,adId, header, redirect, asr} = props
 
     const [pin, setPin] = useState("")
     const [loading, setLoading] =useState(false)
+
     
     const {addToast} = useToasts()
 
@@ -51,7 +52,7 @@ const PinInputComponent = (props: any) => {
                                 autoDismiss: true
                             })
                         }
-                        props.redirect(header.msisdn)
+                        props.redirect(asr)
                     }).catch(e => {
                         console.log(e)
                         addToast("Error confirming your pin, check and try again", {
